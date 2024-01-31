@@ -1,10 +1,14 @@
 Rails.application.routes.draw do
-  root 'posts#index'
+
   post '/upload', to: 'posts#create'
+  get '/posts', to: 'posts#index'
+  get '/posts/:id', to: 'posts#show'
+  delete '/posts/:id', to: 'posts#destroy'
   
   post '/register', to: 'users#create'
   post '/login', to: 'authentication#login'
   post '/logout', to: 'authentication#logout'
 
   get '/users', to: 'users#index'
+  get '/users/:id', to: 'users#show'
 end
