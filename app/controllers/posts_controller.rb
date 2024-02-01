@@ -6,7 +6,7 @@ class PostsController < ApplicationController
         @post = current_user.posts.new(post_params)
         if @post.save
             @post.file.attach(params[:file])
-            render json: format_output(@post), status: :ok
+            render json: @post, status: :ok
         else
             render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
         end
@@ -35,17 +35,8 @@ class PostsController < ApplicationController
                 render json: { errors: 'Post not found' }, status: :not_found
             end
         end
-    
-        def format_output(post)
-            file_url = url_for(post.file)
-            {
-                post: post,
-                file_url: file_url
-            }
-        end
 
         def post_params
             params.require(:post).permit(:title, :file)
-        end
-        
+        end     
 end
