@@ -8,7 +8,7 @@ class PostsController < ApplicationController
             @post.file.attach(params[:file])
             render json: @post, status: :ok
         else
-            render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: @post.errors.full_messages }, status: :unprocessable_entity
         end
     end
 
