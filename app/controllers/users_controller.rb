@@ -35,14 +35,4 @@ class UsersController < ApplicationController
         params.permit( :username, :email, :password, :password_confirmation )
     end
 
-    def show_user_count(users)
-        users = User.all.map do |user| {
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            post_count: user.posts.count
-        }
-        end
-        return users
-    end
 end
