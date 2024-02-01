@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
     before_action :authorize_request, except: :create
+    before_action :find_user, only: [:show, :destroy]
     
     def create
         @user = User.new(user_params)
@@ -14,19 +15,25 @@ class UsersController < ApplicationController
 
     def index
         @users = User.all
-        render json: @users, each_serializer: UserSerializer, status: :ok
+        render json: @users, status: :ok
     end
     
     def show
-        @user = User.find_by(id: params[:id])
-        render json: @user, serializer: UserSerializer, show_posts: true, status: :ok
+        if @user == current_user
+            render json: @user, show_posts: true, status: :ok
+        else
+            render json: { error: 'Unauthorized' }, status: :unauthorized
+        end
     end
 
 
     def destroy
-        @user = User.find_by(id: params[:id])
-        @user.destroy
-        head :no_content
+        if @user = current_user
+            @user.destroy
+            head :no_content
+        else
+            render json: { error: 'Unauthorized' }, status: :unauthorized
+        end
     end
 
 
@@ -35,4 +42,10 @@ class UsersController < ApplicationController
         params.permit( :username, :email, :password, :password_confirmation )
     end
 
+    def find_user
+        @user = User.find_by(id: params[:id])
+        unless @user
+            render json: { error: 'User not found' }, status: :not_found
+        end
+    end
 end
